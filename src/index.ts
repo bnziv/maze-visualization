@@ -1,6 +1,7 @@
 import { Maze, Cell } from "./maze/Maze";
 import { dfs } from "./algorithms/dfs";
 import { bfs } from "./algorithms/bfs";
+import { aStar } from "./algorithms/aStar";
 
 const container = document.getElementById("maze-container")!;
 container.style.gridTemplateColumns = 'repeat(2, 1fr)';
@@ -114,27 +115,26 @@ function handleEnd(cellDiv: HTMLElement, cell: Cell, maze: Maze) {
 document.getElementById('solve')!.addEventListener('click', async () => {
     if (!startCell || !endCell) return;
 
-    // Create copies of the maze for BFS and DFS
     const mazeBFS = maze!.clone();
     const mazeDFS = maze!.clone();
+    const mazeAStar = maze!.clone();
 
-    // Clear the container and render initial mazes
     container.innerHTML = '';
     container.appendChild(renderMaze(mazeBFS, 'bfs'));
     container.appendChild(renderMaze(mazeDFS, 'dfs'));
+    container.appendChild(renderMaze(mazeAStar, 'astar'));
 
-    // Get the maze containers for BFS and DFS
     const bfsMazeDiv = document.getElementById('maze-bfs')!;
     const dfsMazeDiv = document.getElementById('maze-dfs')!;
+    const astarMazeDiv = document.getElementById('maze-astar')!;
 
-    // Create generators for BFS and DFS
     const bfsGenerator = bfs(mazeBFS);
     const dfsGenerator = dfs(mazeDFS);
+    const astarGenerator = aStar(mazeAStar);
 
     // Function to animate traversal
     const animateTraversal = async (generator: Generator<Maze>, mazeDiv: HTMLElement) => {
         for (const updatedMaze of generator) {
-            // Update the maze display
             mazeDiv.innerHTML = '';
             updatedMaze.getGrid().forEach(row => {
                 row.forEach(cell => {
@@ -149,16 +149,15 @@ document.getElementById('solve')!.addEventListener('click', async () => {
                 });
             });
 
-            // Add a small delay for animation
             await new Promise(resolve => setTimeout(resolve, 50));
         }
-        
+
     };
 
-    // Animate BFS and DFS simultaneously
     await Promise.all([
         animateTraversal(bfsGenerator, bfsMazeDiv),
         animateTraversal(dfsGenerator, dfsMazeDiv),
+        animateTraversal(astarGenerator, astarMazeDiv)
     ]);
 });
 
