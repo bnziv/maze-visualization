@@ -21,6 +21,14 @@ body {
   box-sizing: border-box;
 }
 
+.visited {
+  background-color: gray;
+}
+
+.path {
+  background-color: yellow;
+}
+
 /* Wall styles */
 .top-wall,
 .right-wall,

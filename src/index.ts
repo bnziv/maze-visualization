@@ -1,4 +1,5 @@
 import { Maze, Cell } from "./maze/Maze";
+import { dfs } from "./algorithms/dfs";
 
 const container = document.getElementById("maze-container")!;
 container.style.gridTemplateColumns = 'repeat(2, 1fr)';
@@ -9,9 +10,9 @@ let startCellDiv: HTMLElement | null = null;
 let endCell: Cell | null = null;
 let endCellDiv: HTMLElement | null = null;
 
-function renderMazes() {
-    const maze = new Maze(21, 21);
-    maze.generateRecursiveBacktracking();
+let maze: Maze | null = null;
+
+function renderMazes(maze: Maze) {
     const grid = maze.getGrid();
 
     for (let i = 0; i < 4; i++) {
@@ -27,13 +28,15 @@ function renderMazes() {
                 div.className = 'cell';
 
                 // Event listeners for adding start and end
-                div.addEventListener('click', () => handleStart(div, cell, maze));
+                div.addEventListener('click', () => handleStart(div, cell, maze!));
                 div.addEventListener('contextmenu', (event) => {
                     event.preventDefault();
-                    handleEnd(div, cell, maze);
+                    handleEnd(div, cell, maze!);
                 });
 
                 renderCell(cell, div);
+                if (cell.visited) div.classList.add('visited');
+                if (cell.path) div.classList.add('path');
                 mazeDiv.appendChild(div);
             })
         })
@@ -65,6 +68,16 @@ function renderCell(cell: Cell, div: HTMLElement) {
     const cornerBottomRight = document.createElement('div');
     cornerBottomRight.className = 'corner-bottom-right';
     div.appendChild(cornerBottomRight);
+
+    if (cell == startCell) {
+        const startCircle = document.createElement('div');
+        startCircle.classList.add('start');
+        div.appendChild(startCircle);
+    } else if (cell == endCell) {
+        const endCircle = document.createElement('div');
+        endCircle.classList.add('end');
+        div.appendChild(endCircle);
+    }
 }
 
 function handleStart(cellDiv: HTMLElement, cell: Cell, maze: Maze) {
@@ -112,11 +125,16 @@ function handleEnd(cellDiv: HTMLElement, cell: Cell, maze: Maze) {
 }
 
 document.getElementById('solve')!.addEventListener('click', () => {
-    console.log("Start", startCell);
-    console.log("End", endCell);
+    if (!startCell || !endCell) return;
+    dfs(maze!);
+    container.innerHTML = '';
+    renderMazes(maze!);
 });
 
 document.getElementById('generate')!.addEventListener('click', () => {
     container.innerHTML = '';
-    renderMazes();
+    maze = new Maze(21, 21);
+    maze.generateRecursiveBacktracking();
+    maze.reset();
+    renderMazes(maze);
 });

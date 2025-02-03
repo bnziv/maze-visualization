@@ -17,8 +17,8 @@ class Cell {
 }
 
 class Maze {
-    private rows: number;
-    private cols: number;
+    public rows: number;
+    public cols: number;
     private grid: Cell[][];
     public startCell: Cell | null = null;
     public endCell: Cell | null = null;
@@ -61,7 +61,7 @@ class Maze {
         ];
 
         for (const [row, col] of adjacentCells) {
-            if (row >= 0 && row < this.rows && col >= 0 && col < this.cols && !this.grid[row][col].visited) {
+            if (this.inBounds(row, col) && !this.grid[row][col].visited) {
                 neighbors.push(this.grid[row][col]);
             }
         }
@@ -88,6 +88,10 @@ class Maze {
         }
     }
 
+    inBounds(row: number, col: number) {
+        return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
+    }
+
     setStartCell(cell: Cell) {
         this.startCell = cell;
     }
@@ -96,10 +100,11 @@ class Maze {
         this.endCell = cell;
     }
 
-    resetVisited() {
+    reset() {
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.cols; j++) {
                 this.grid[i][j].visited = false;
+                this.grid[i][j].path = false;
             }
         }
     }
