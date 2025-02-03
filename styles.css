@@ -28,6 +28,10 @@ body {
   background-color: yellow;
 }
 
+.current {
+  background-color: blue;
+}
+
 .start {
   background-color: green;
 }

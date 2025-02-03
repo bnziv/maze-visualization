@@ -19,6 +19,8 @@ export function* aStar(maze: Maze) {
         open.sort((a, b) => (fScore.get(a) ?? Infinity) - (fScore.get(b) ?? Infinity));
         const current = open.shift()!;
 
+        maze.currentCell = current;
+
         if (current === maze.endCell) {
             maze.tracePath();
             break;

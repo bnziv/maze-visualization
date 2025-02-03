@@ -13,6 +13,8 @@ export function* dfs(maze: Maze) {
         cell = stack.pop()!;
         cell.visited = true;
 
+        maze.currentCell = cell;
+
         if (cell === maze.endCell) {
             maze.tracePath();
             break;

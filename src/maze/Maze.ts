@@ -31,6 +31,7 @@ class Maze {
     private grid: Cell[][];
     public startCell: Cell | null = null;
     public endCell: Cell | null = null;
+    public currentCell: Cell | null = null;
 
     constructor(rows: number, cols: number) {
         this.rows = rows;

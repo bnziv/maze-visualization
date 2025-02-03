@@ -14,6 +14,8 @@ export function* bfs(maze: Maze) {
     while (queue.length > 0) {
         cell = queue.shift()!;
         cell.visited = true;
+        
+        maze.currentCell = cell;
 
         if (cell === maze.endCell) {
             maze.tracePath();

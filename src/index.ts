@@ -143,6 +143,7 @@ document.getElementById('solve')!.addEventListener('click', async () => {
                     renderCell(cell, div);
                     if (cell == updatedMaze.startCell) div.classList.add('start');
                     if (cell == updatedMaze.endCell) div.classList.add('end');
+                    if (cell == updatedMaze.currentCell) div.classList.add('current');
                     if (cell.visited) div.classList.add('visited');
                     if (cell.path) div.classList.add('path');
                     mazeDiv.appendChild(div);
