@@ -1,8 +1,13 @@
-import Maze from "./maze/Maze";
+import { Maze, Cell } from "./maze/Maze";
 
 const container = document.getElementById("maze-container")!;
 container.style.gridTemplateColumns = 'repeat(2, 1fr)';
 container.style.gap = '20px';
+
+let startCell: Cell | null = null;
+let startCellDiv: HTMLElement | null = null;
+let endCell: Cell | null = null;
+let endCellDiv: HTMLElement | null = null;
 
 function renderMazes() {
     const maze = new Maze(21, 21);
@@ -21,48 +26,14 @@ function renderMazes() {
                 const div = document.createElement('div');
                 div.className = 'cell';
 
-                // Top wall
-                if (cell.walls.top) {
-                    const topWall = document.createElement('div');
-                    topWall.className = 'top-wall';
-                    div.appendChild(topWall);
-                }
+                // Event listeners for adding start and end
+                div.addEventListener('click', () => handleStart(div, cell, maze));
+                div.addEventListener('contextmenu', (event) => {
+                    event.preventDefault();
+                    handleEnd(div, cell, maze);
+                });
 
-                // Right wall
-                if (cell.walls.right) {
-                    const rightWall = document.createElement('div');
-                    rightWall.className = 'right-wall';
-                    div.appendChild(rightWall);
-                }
-
-                // Bottom wall
-                if (cell.walls.bottom) {
-                    const bottomWall = document.createElement('div');
-                    bottomWall.className = 'bottom-wall';
-                    div.appendChild(bottomWall);
-                }
-
-                // Left wall
-                if (cell.walls.left) {
-                    const leftWall = document.createElement('div');
-                    leftWall.className = 'left-wall';
-                    div.appendChild(leftWall);
-                }
-                
-                // Corners to fix up styling
-                const cornerTopLeft = document.createElement('div');
-                cornerTopLeft.className = 'corner-top-left';
-                div.appendChild(cornerTopLeft);
-                const cornerTopRight = document.createElement('div');
-                cornerTopRight.className = 'corner-top-right';
-                div.appendChild(cornerTopRight);
-                const cornerBottomLeft = document.createElement('div');
-                cornerBottomLeft.className = 'corner-bottom-left';
-                div.appendChild(cornerBottomLeft);
-                const cornerBottomRight = document.createElement('div');
-                cornerBottomRight.className = 'corner-bottom-right';
-                div.appendChild(cornerBottomRight);
-
+                renderCell(cell, div);
                 mazeDiv.appendChild(div);
             })
         })
@@ -71,6 +42,79 @@ function renderMazes() {
     }
 }
 
+function renderCell(cell: Cell, div: HTMLElement) {
+    const wallPositions = ['top', 'right', 'bottom', 'left'];
+    wallPositions.forEach(position => {
+        if ((cell.walls as any)[position]) {
+            const wall = document.createElement('div');
+            wall.className = `${position}-wall`;
+            div.appendChild(wall);
+        }
+    })
+
+    // Corners to fix up styling
+    const cornerTopLeft = document.createElement('div');
+    cornerTopLeft.className = 'corner-top-left';
+    div.appendChild(cornerTopLeft);
+    const cornerTopRight = document.createElement('div');
+    cornerTopRight.className = 'corner-top-right';
+    div.appendChild(cornerTopRight);
+    const cornerBottomLeft = document.createElement('div');
+    cornerBottomLeft.className = 'corner-bottom-left';
+    div.appendChild(cornerBottomLeft);
+    const cornerBottomRight = document.createElement('div');
+    cornerBottomRight.className = 'corner-bottom-right';
+    div.appendChild(cornerBottomRight);
+}
+
+function handleStart(cellDiv: HTMLElement, cell: Cell, maze: Maze) {
+    if (cellDiv === startCellDiv || cellDiv === endCellDiv) return;
+    if (!startCell) {
+        const startCircle = document.createElement('div');
+        startCircle.classList.add('start');
+        cellDiv.appendChild(startCircle);
+
+        startCellDiv = cellDiv;
+        startCell = cell;
+        maze.setStartCell(cell);
+    } else {
+        startCellDiv!.querySelector('.start')?.remove();
+        const startCircle = document.createElement('div');
+        startCircle.classList.add('start');
+        cellDiv.appendChild(startCircle);
+
+        startCellDiv = cellDiv;
+        startCell = cell;
+        maze.setStartCell(startCell);
+    }
+}
+
+function handleEnd(cellDiv: HTMLElement, cell: Cell, maze: Maze) {
+    if (cellDiv === startCellDiv || cellDiv === endCellDiv) return;
+    if (!endCell) {
+        const endCircle = document.createElement('div');
+        endCircle.classList.add('end');
+        cellDiv.appendChild(endCircle);
+
+        endCellDiv = cellDiv;
+        endCell = cell;
+        maze.setEndCell(cell);
+    } else {
+        endCellDiv!.querySelector('.end')?.remove();
+        const endCircle = document.createElement('div');
+        endCircle.classList.add('end');
+        cellDiv.appendChild(endCircle);
+
+        endCellDiv = cellDiv;
+        endCell = cell;
+        maze.setEndCell(endCell);
+    }
+}
+
+document.getElementById('solve')!.addEventListener('click', () => {
+    console.log("Start", startCell);
+    console.log("End", endCell);
+});
 
 document.getElementById('generate')!.addEventListener('click', () => {
     container.innerHTML = '';

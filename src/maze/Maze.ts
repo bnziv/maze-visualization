@@ -20,6 +20,8 @@ class Maze {
     private rows: number;
     private cols: number;
     private grid: Cell[][];
+    public startCell: Cell | null = null;
+    public endCell: Cell | null = null;
 
     constructor(rows: number, cols: number) {
         this.rows = rows;
@@ -86,9 +88,25 @@ class Maze {
         }
     }
 
+    setStartCell(cell: Cell) {
+        this.startCell = cell;
+    }
+
+    setEndCell(cell: Cell) {
+        this.endCell = cell;
+    }
+
+    resetVisited() {
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.cols; j++) {
+                this.grid[i][j].visited = false;
+            }
+        }
+    }
+
     getGrid(): Cell[][] {
         return this.grid;
     }
 }
 
-export default Maze
+export { Cell, Maze };
