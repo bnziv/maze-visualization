@@ -1,5 +1,6 @@
 import { Maze, Cell } from "./maze/Maze";
 import { dfs } from "./algorithms/dfs";
+import { bfs } from "./algorithms/bfs";
 
 const container = document.getElementById("maze-container")!;
 container.style.gridTemplateColumns = 'repeat(2, 1fr)';
@@ -126,7 +127,7 @@ function handleEnd(cellDiv: HTMLElement, cell: Cell, maze: Maze) {
 
 document.getElementById('solve')!.addEventListener('click', () => {
     if (!startCell || !endCell) return;
-    dfs(maze!);
+    bfs(maze!);
     container.innerHTML = '';
     renderMazes(maze!);
 });

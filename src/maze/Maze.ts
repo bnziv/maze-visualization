@@ -14,6 +14,14 @@ class Cell {
         this.x = x;
         this.y = y;
     }
+
+    clone() {
+        const clone = new Cell(this.x, this.y);
+        clone.visited = this.visited;
+        clone.path = this.path;
+        clone.walls = { ...this.walls };
+        return clone;
+    }
 }
 
 class Maze {
@@ -88,6 +96,33 @@ class Maze {
         }
     }
 
+    /**
+     * Returns an array of possible unvisited neighbors for a cell
+     * @param cell
+     * @returns
+     */
+    getNeighbors(cell: Cell) {
+        const neighbors: Cell[] = [];
+        const directions = [
+            { wall: "top", x: 0, y: -1 },
+            { wall: "right", x: 1, y: 0 },
+            { wall: "bottom", x: 0, y: 1 },
+            { wall: "left", x: -1, y: 0 },
+        ];
+    
+        for (const { wall, x, y } of directions) {
+            if (!cell.walls[wall as keyof typeof cell.walls]) {
+                const newY = cell.y + y;
+                const newX = cell.x + x;
+    
+                if (this.inBounds(newY, newX) && !this.grid[newY][newX].visited) {
+                    neighbors.push(this.grid[newY][newX]);
+                }
+            }
+        }
+        return neighbors;
+    }
+
     inBounds(row: number, col: number) {
         return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
     }
@@ -111,6 +146,14 @@ class Maze {
 
     getGrid(): Cell[][] {
         return this.grid;
+    }
+
+    clone() {
+        const maze = new Maze(this.rows, this.cols);
+        maze.grid = this.grid.map(row => row.map(cell => cell.clone()));
+        maze.startCell = maze.grid[this.startCell!.y][this.startCell!.x];
+        maze.endCell = maze.grid[this.endCell!.y][this.endCell!.x];
+        return maze;
     }
 }
 
