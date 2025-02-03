@@ -13,37 +13,38 @@ let endCellDiv: HTMLElement | null = null;
 
 let maze: Maze | null = null;
 
-function renderMazes(maze: Maze) {
+function renderMazes(maze: Maze, id: string) {
+    const div = document.createElement('div');
+    div.id = `maze-${id}`;
+    div.appendChild(document.createElement('h2')).textContent = `Maze ${id}`;
     const grid = maze.getGrid();
 
-    for (let i = 0; i < 4; i++) {
-        const mazeDiv = document.createElement('div');
-        mazeDiv.id = `maze-${i}`;
-        mazeDiv.className = 'maze';
-        mazeDiv.innerHTML = '';
-        mazeDiv.style.gridTemplateColumns = `repeat(${grid[0].length}, 1fr)`;
+    const mazeDiv = document.createElement('div');
+    mazeDiv.className = 'maze';
+    mazeDiv.innerHTML = '';
+    mazeDiv.style.gridTemplateColumns = `repeat(${grid[0].length}, 1fr)`;
 
-        grid.forEach(row => {
-            row.forEach(cell => {
-                const div = document.createElement('div');
-                div.className = 'cell';
+    grid.forEach(row => {
+        row.forEach(cell => {
+            const div = document.createElement('div');
+            div.className = 'cell';
 
-                // Event listeners for adding start and end
-                div.addEventListener('click', () => handleStart(div, cell, maze!));
-                div.addEventListener('contextmenu', (event) => {
-                    event.preventDefault();
-                    handleEnd(div, cell, maze!);
-                });
+            // Event listeners for adding start and end
+            div.addEventListener('click', () => handleStart(div, cell, maze!));
+            div.addEventListener('contextmenu', (event) => {
+                event.preventDefault();
+                handleEnd(div, cell, maze!);
+            });
 
-                renderCell(cell, div);
-                if (cell.visited) div.classList.add('visited');
-                if (cell.path) div.classList.add('path');
-                mazeDiv.appendChild(div);
-            })
+            renderCell(cell, div);
+            if (cell.visited) div.classList.add('visited');
+            if (cell.path) div.classList.add('path');
+            mazeDiv.appendChild(div);
         })
+    })
+    div.appendChild(mazeDiv);
 
-        container.appendChild(mazeDiv);
-    }
+    container.appendChild(div);
 }
 
 function renderCell(cell: Cell, div: HTMLElement) {
@@ -127,9 +128,16 @@ function handleEnd(cellDiv: HTMLElement, cell: Cell, maze: Maze) {
 
 document.getElementById('solve')!.addEventListener('click', () => {
     if (!startCell || !endCell) return;
-    bfs(maze!);
+
+    const mazeBFS = maze!.clone();
+    const mazeDFS = maze!.clone();
+
+    bfs(mazeBFS);
+    dfs(mazeDFS);
+
     container.innerHTML = '';
-    renderMazes(maze!);
+    renderMazes(mazeBFS, 'BFS');
+    renderMazes(mazeDFS, 'DFS');
 });
 
 document.getElementById('generate')!.addEventListener('click', () => {
@@ -137,5 +145,5 @@ document.getElementById('generate')!.addEventListener('click', () => {
     maze = new Maze(21, 21);
     maze.generateRecursiveBacktracking();
     maze.reset();
-    renderMazes(maze);
+    renderMazes(maze, 'Generation');
 });

@@ -3,6 +3,7 @@ class Cell {
     y: number;
     visited: boolean = false;
     path: boolean = false;
+    previous: Cell | null = null;
     walls: { top: boolean, right: boolean, bottom: boolean, left: boolean } = {
         top: true,
         right: true,
@@ -154,6 +155,14 @@ class Maze {
         maze.startCell = maze.grid[this.startCell!.y][this.startCell!.x];
         maze.endCell = maze.grid[this.endCell!.y][this.endCell!.x];
         return maze;
+    }
+
+    tracePath() {
+        let currentCell: Cell | null = this.endCell;
+        while (currentCell != null) {
+            currentCell.path = true;
+            currentCell = currentCell.previous;
+        }
     }
 }
 
