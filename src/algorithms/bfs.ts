@@ -1,6 +1,6 @@
 import { Maze, Cell } from "../maze/Maze";
 
-export function bfs(maze: Maze) {
+export function* bfs(maze: Maze) {
     if (!maze.startCell || !maze.endCell) return;
     maze.reset()
 
@@ -25,5 +25,7 @@ export function bfs(maze: Maze) {
             queue.push(neighbor);
             parentMap.set(neighbor, cell);
         }
+        yield maze;
     }
+    yield maze;
 }

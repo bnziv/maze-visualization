@@ -102,7 +102,7 @@ class Maze {
      * @param cell
      * @returns
      */
-    getNeighbors(cell: Cell) {
+    getNeighbors(cell: Cell, randomize: boolean = false) {
         const neighbors: Cell[] = [];
         const directions = [
             { wall: "top", x: 0, y: -1 },
@@ -120,6 +120,9 @@ class Maze {
                     neighbors.push(this.grid[newY][newX]);
                 }
             }
+        }
+        if (randomize) {
+            neighbors.sort(() => Math.random() - 0.5);
         }
         return neighbors;
     }

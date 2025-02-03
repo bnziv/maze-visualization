@@ -1,6 +1,6 @@
 import { Maze, Cell } from "../maze/Maze";
 
-export function dfs(maze: Maze) {
+export function* dfs(maze: Maze) {
     if (!maze.startCell || !maze.endCell) return;
     maze.reset()
 
@@ -18,12 +18,12 @@ export function dfs(maze: Maze) {
             break;
         }
 
-        const neighbors = maze.getNeighbors(cell);
-        if (neighbors.length > 0) {
+        for (const neighbor of maze.getNeighbors(cell)) {
             stack.push(cell);
-            const nextCell = neighbors.pop()!;
-            nextCell.previous = cell;
-            stack.push(nextCell);
+            neighbor.previous = cell;
+            stack.push(neighbor);
         }
+        yield maze;
     }
+    yield maze;
 }
