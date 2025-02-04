@@ -168,6 +168,37 @@ class Maze {
             currentCell = currentCell.previous;
         }
     }
+
+    generateKruskalsMaze() {
+        // Create a set for each cell and add each cell to its own set
+        const sets = new Map<Cell, Set<Cell>>();
+        this.grid.flat().forEach(cell => sets.set(cell, new Set([cell])));
+    
+        // Create a list of all walls
+        const edges: { cell1: Cell; cell2: Cell }[] = [];
+        for (let y = 0; y < this.rows; y++) {
+            for (let x = 0; x < this.cols; x++) {
+                const cell = this.grid[y][x];
+                if (x < this.cols - 1) edges.push({ cell1: cell, cell2: this.grid[y][x + 1] }); // Right neighbor
+                if (y < this.rows - 1) edges.push({ cell1: cell, cell2: this.grid[y + 1][x] }); // Bottom neighbor
+            }
+        }
+    
+        // For each wall in random order
+        edges.sort(() => Math.random() - 0.5);
+        for (const { cell1, cell2 } of edges) {
+            const set1 = sets.get(cell1)!;
+            const set2 = sets.get(cell2)!;
+    
+            if (set1 !== set2) { // In distinct sets
+                this.removeWall(cell1, cell2);
+    
+                // Merge the two sets
+                const mergedSet = new Set([...set1, ...set2]);
+                mergedSet.forEach(cell => sets.set(cell, mergedSet));
+            }
+        }
+    }        
 }
 
 export { Cell, Maze };
