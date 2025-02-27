@@ -14,9 +14,9 @@ let endCellDiv: HTMLElement | null = null;
 
 let maze: Maze | null = null;
 
-function renderMaze(maze: Maze, id: string) {
+function renderMaze(maze: Maze, id: string, header: boolean = true) {
     const wrapper = document.createElement('div');
-    wrapper.appendChild(document.createElement('h2')).textContent = id;
+    if (header) wrapper.appendChild(document.createElement('h2')).textContent = id;
     const grid = maze.getGrid();
     const mazeDiv = document.createElement('div');
     mazeDiv.id = `maze-${id}`;
@@ -121,6 +121,7 @@ document.getElementById('solve')!.addEventListener('click', async () => {
         alert('Please add a start and end cell first.');
         return;
     };
+    (document.getElementsByClassName('instructions')[0] as HTMLElement).style.display = 'none';
 
     const selectedAlgorithms = [];
     if ((document.getElementById('bfs') as HTMLInputElement).checked) selectedAlgorithms.push('bfs');
@@ -138,7 +139,7 @@ document.getElementById('solve')!.addEventListener('click', async () => {
     };
 
     container.innerHTML = '';
-    document.getElementById('maze-Generation')!.remove();
+    if (document.getElementById('maze-Generation')) document.getElementById('maze-Generation')!.remove();
     
     if (mazeInstances.bfs) {
         container.appendChild(renderMaze(mazeInstances.bfs, 'BFS'));
@@ -193,6 +194,8 @@ document.getElementById('solve')!.addEventListener('click', async () => {
         const astarMazeDiv = document.getElementById('maze-A*')!;
         animations.push(animateTraversal(generators.astar, astarMazeDiv));
     }
+
+    await Promise.all(animations);
 });
 
 document.getElementById('generate')!.addEventListener('click', () => {
@@ -218,7 +221,7 @@ document.getElementById('generate')!.addEventListener('click', () => {
     maze.reset();
 
     if (document.getElementById('maze-Generation')) document.getElementById('maze-Generation')!.remove();
-    const div = renderMaze(maze, 'Generation');
+    const div = renderMaze(maze, 'Generation', false);
     div.style.width = 'fit-content';
     div.style.margin = '0 auto';
     div.id = 'maze-Generation';
