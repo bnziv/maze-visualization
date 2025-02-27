@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Maze Visualizer</title>
-  <script type="module" crossorigin src="/maze-visualization/assets/index-UVXD3h4c.js"></script>
-  <link rel="stylesheet" crossorigin href="/maze-visualization/assets/index-C3n9Pjp1.css">
+  <script type="module" crossorigin src="/maze-visualization/assets/index-BtwFmnQF.js"></script>
+  <link rel="stylesheet" crossorigin href="/maze-visualization/assets/index-CO_Ci2Ct.css">
 </head>
 <body>
   <div class="container">
@@ -28,12 +28,34 @@
       <br/>
       
       <button id="generate">Generate Maze</button>
+      
+      
+    </div>
+    
+    <p class="instructions">Click Generate Maze, then select the start point (left click) and end point (right click).</p>
+    
+    <div id="maze-container"></div>
+    <div id="solve-container">
+      <br/>
+      <br/>
+      <label>Select Algorithms:</label>
+      <div style="display: flex; justify-content: center;">
+        <div>
+          <input type="checkbox" id="bfs" value="bfs" checked>
+          <label for="bfs">BFS</label>
+        </div>
+        <div>
+          <input type="checkbox" id="dfs" value="dfs" checked>
+          <label for="dfs">DFS</label>
+        </div>
+        <div>
+          <input type="checkbox" id="astar" value="astar" checked>
+          <label for="astar">A*</label>
+        </div>
+      </div>
+      <br/>
       <button id="solve">Solve Maze</button>
     </div>
-
-    <p class="instructions">Click Generate Maze, then select the start point (left click) and end point (right click).</p>
-
-    <div id="maze-container"></div>
   </div>
 
 </body>
