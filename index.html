@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Maze Visualizer</title>
-  <script type="module" crossorigin src="/maze-visualization/assets/index-BtwFmnQF.js"></script>
+  <script type="module" crossorigin src="/maze-visualization/assets/index-Bt4g_daz.js"></script>
   <link rel="stylesheet" crossorigin href="/maze-visualization/assets/index-CO_Ci2Ct.css">
 </head>
 <body>
@@ -18,7 +18,8 @@
       <label for="cols">Columns:</label>
       <input type="number" id="cols" min="5" max="50" value="10">
 
-      <label for="algorithm">Maze Algorithm:</label>
+      <br/>
+      <label for="algorithm">Generation Algorithm:</label>
       <select id="algorithm">
         <option value="recursive">Recursive Backtracking</option>
         <option value="kruskal">Kruskal's Algorithm</option>
@@ -32,13 +33,12 @@
       
     </div>
     
-    <p class="instructions">Click Generate Maze, then select the start point (left click) and end point (right click).</p>
     
     <div id="maze-container"></div>
     <div id="solve-container">
+      <h3 class="instructions">Select the start point (left click) and end point (right click).</h3>
       <br/>
-      <br/>
-      <label>Select Algorithms:</label>
+      <label>Traversal Algorithms:</label>
       <div style="display: flex; justify-content: center;">
         <div>
           <input type="checkbox" id="bfs" value="bfs" checked>
