@@ -24,6 +24,10 @@ button, select, input {
   margin: 0 auto;
 }
 
+#solve-container {
+  display: none;
+}
+
 .maze {
   display: grid;
   border: 8px solid black;

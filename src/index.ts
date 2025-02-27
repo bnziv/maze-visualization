@@ -15,6 +15,8 @@ let endCellDiv: HTMLElement | null = null;
 let maze: Maze | null = null;
 
 function renderMaze(maze: Maze, id: string) {
+    const wrapper = document.createElement('div');
+    wrapper.appendChild(document.createElement('h2')).textContent = id;
     const grid = maze.getGrid();
     const mazeDiv = document.createElement('div');
     mazeDiv.id = `maze-${id}`;
@@ -42,7 +44,9 @@ function renderMaze(maze: Maze, id: string) {
             mazeDiv.appendChild(div);
         })
     })
-    return mazeDiv;
+
+    wrapper.appendChild(mazeDiv);
+    return wrapper;
 }
 
 function renderCell(cell: Cell, div: HTMLElement) {
@@ -118,22 +122,39 @@ document.getElementById('solve')!.addEventListener('click', async () => {
         return;
     };
 
-    const mazeBFS = maze!.clone();
-    const mazeDFS = maze!.clone();
-    const mazeAStar = maze!.clone();
+    const selectedAlgorithms = [];
+    if ((document.getElementById('bfs') as HTMLInputElement).checked) selectedAlgorithms.push('bfs');
+    if ((document.getElementById('dfs') as HTMLInputElement).checked) selectedAlgorithms.push('dfs');
+    if ((document.getElementById('astar') as HTMLInputElement).checked) selectedAlgorithms.push('astar');
+
+    if (selectedAlgorithms.length === 0) {
+        return;
+    }
+
+    const mazeInstances = {
+        bfs: selectedAlgorithms.includes('bfs') ? maze!.clone() : null,
+        dfs: selectedAlgorithms.includes('dfs') ? maze!.clone() : null,
+        astar: selectedAlgorithms.includes('astar') ? maze!.clone() : null
+    };
 
     container.innerHTML = '';
-    container.appendChild(renderMaze(mazeBFS, 'bfs'));
-    container.appendChild(renderMaze(mazeDFS, 'dfs'));
-    container.appendChild(renderMaze(mazeAStar, 'astar'));
+    document.getElementById('maze-Generation')!.remove();
+    
+    if (mazeInstances.bfs) {
+        container.appendChild(renderMaze(mazeInstances.bfs, 'BFS'));
+    }
+    if (mazeInstances.dfs) {
+        container.appendChild(renderMaze(mazeInstances.dfs, 'DFS'));
+    }
+    if (mazeInstances.astar) {
+        container.appendChild(renderMaze(mazeInstances.astar, 'A*'));
+    }
 
-    const bfsMazeDiv = document.getElementById('maze-bfs')!;
-    const dfsMazeDiv = document.getElementById('maze-dfs')!;
-    const astarMazeDiv = document.getElementById('maze-astar')!;
-
-    const bfsGenerator = bfs(mazeBFS);
-    const dfsGenerator = dfs(mazeDFS);
-    const astarGenerator = aStar(mazeAStar);
+    const generators = {
+        bfs: bfs(mazeInstances.bfs!),
+        dfs: dfs(mazeInstances.dfs!),
+        astar: aStar(mazeInstances.astar!)
+    };
 
     // Function to animate traversal
     const animateTraversal = async (generator: Generator<Maze>, mazeDiv: HTMLElement) => {
@@ -158,11 +179,20 @@ document.getElementById('solve')!.addEventListener('click', async () => {
 
     };
 
-    await Promise.all([
-        animateTraversal(bfsGenerator, bfsMazeDiv),
-        animateTraversal(dfsGenerator, dfsMazeDiv),
-        animateTraversal(astarGenerator, astarMazeDiv)
-    ]);
+    const animations = [];
+
+    if (mazeInstances.bfs) {
+        const bfsMazeDiv = document.getElementById('maze-BFS')!;
+        animations.push(animateTraversal(generators.bfs, bfsMazeDiv));
+    }
+    if (mazeInstances.dfs) {
+        const dfsMazeDiv = document.getElementById('maze-DFS')!;
+        animations.push(animateTraversal(generators.dfs, dfsMazeDiv));
+    }
+    if (mazeInstances.astar) {
+        const astarMazeDiv = document.getElementById('maze-A*')!;
+        animations.push(animateTraversal(generators.astar, astarMazeDiv));
+    }
 });
 
 document.getElementById('generate')!.addEventListener('click', () => {
@@ -186,9 +216,15 @@ document.getElementById('generate')!.addEventListener('click', () => {
     }
 
     maze.reset();
-    const div = document.createElement('div');
-    div.appendChild(document.createElement('h2')).textContent = ""
-    const mazeDiv = renderMaze(maze, 'Generation');
-    div.appendChild(mazeDiv);
-    container.appendChild(div);
+
+    if (document.getElementById('maze-Generation')) document.getElementById('maze-Generation')!.remove();
+    const div = renderMaze(maze, 'Generation');
+    div.style.width = 'fit-content';
+    div.style.margin = '0 auto';
+    div.id = 'maze-Generation';
+    container.style.display = 'flex';
+    container.style.justifyContent = 'center';
+    container.before(div);
+
+    document.getElementById('solve-container')!.style.display = 'block';
 });

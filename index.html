@@ -27,12 +27,34 @@
       <br/>
       
       <button id="generate">Generate Maze</button>
+      
+      
+    </div>
+    
+    <p class="instructions">Click Generate Maze, then select the start point (left click) and end point (right click).</p>
+    
+    <div id="maze-container"></div>
+    <div id="solve-container">
+      <br/>
+      <br/>
+      <label>Select Algorithms:</label>
+      <div style="display: flex; justify-content: center;">
+        <div>
+          <input type="checkbox" id="bfs" value="bfs" checked>
+          <label for="bfs">BFS</label>
+        </div>
+        <div>
+          <input type="checkbox" id="dfs" value="dfs" checked>
+          <label for="dfs">DFS</label>
+        </div>
+        <div>
+          <input type="checkbox" id="astar" value="astar" checked>
+          <label for="astar">A*</label>
+        </div>
+      </div>
+      <br/>
       <button id="solve">Solve Maze</button>
     </div>
-
-    <p class="instructions">Click Generate Maze, then select the start point (left click) and end point (right click).</p>
-
-    <div id="maze-container"></div>
   </div>
 
   <script type="module" src="src/index.ts"></script>
