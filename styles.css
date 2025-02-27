@@ -1,6 +1,21 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+.controls {
+  margin-bottom: 15px;
+}
+
+button, select, input {
+  margin: 5px;
+  padding: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
 #maze-container {

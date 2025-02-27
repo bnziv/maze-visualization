@@ -113,7 +113,10 @@ function handleEnd(cellDiv: HTMLElement, cell: Cell, maze: Maze) {
 }
 
 document.getElementById('solve')!.addEventListener('click', async () => {
-    if (!startCell || !endCell) return;
+    if (!startCell || !endCell) {
+        alert('Please add a start and end cell first.');
+        return;
+    };
 
     const mazeBFS = maze!.clone();
     const mazeDFS = maze!.clone();
@@ -164,11 +167,27 @@ document.getElementById('solve')!.addEventListener('click', async () => {
 
 document.getElementById('generate')!.addEventListener('click', () => {
     container.innerHTML = '';
-    maze = new Maze(21, 21);
-    maze.generateRecursiveBacktracking();
+
+    const rows = parseInt((document.getElementById('rows') as HTMLInputElement).value, 10);
+    const cols = parseInt((document.getElementById('cols') as HTMLInputElement).value, 10);
+
+    if (isNaN(rows) || isNaN(cols) || rows < 5 || cols < 5) {
+        alert("Please enter valid dimensions (min: 5x5)");
+        return;
+    }
+
+    maze = new Maze(Math.min(rows, 31), Math.min(cols, 31));
+    const algorithm = (document.getElementById('algorithm') as HTMLSelectElement).value;
+    
+    if (algorithm === 'recursive') {
+        maze.generateRecursiveBacktracking();
+    } else if (algorithm === 'kruskal') {
+        maze.generateKruskalsMaze();
+    }
+
     maze.reset();
     const div = document.createElement('div');
-    div.appendChild(document.createElement('h2')).textContent = `Maze`;
+    div.appendChild(document.createElement('h2')).textContent = ""
     const mazeDiv = renderMaze(maze, 'Generation');
     div.appendChild(mazeDiv);
     container.appendChild(div);
