@@ -200,6 +200,7 @@ document.getElementById('solve')!.addEventListener('click', async () => {
 
 document.getElementById('generate')!.addEventListener('click', () => {
     container.innerHTML = '';
+    (document.getElementsByClassName('instructions')[0] as HTMLElement).style.display = 'block';
 
     const rows = parseInt((document.getElementById('rows') as HTMLInputElement).value, 10);
     const cols = parseInt((document.getElementById('cols') as HTMLInputElement).value, 10);
